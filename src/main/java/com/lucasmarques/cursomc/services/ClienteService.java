@@ -18,15 +18,16 @@ import com.lucasmarques.cursomc.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
-	
+
 	@Autowired
 	private ClienteRepository repo;
-	
+
 	public Cliente find(Integer id) {
 		Optional<Cliente> opt = repo.findById(id);
-		return opt.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getSimpleName()));
+		return opt.orElseThrow(() -> new ObjectNotFoundException(
+				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getSimpleName()));
 	}
-	
+
 	public Cliente insert(Cliente cliente) {
 		cliente.setId(null);
 		return repo.save(cliente);
@@ -38,7 +39,6 @@ public class ClienteService {
 		return repo.save(newCliente);
 	}
 
-
 	public void delete(Integer id) {
 		find(id);
 		try {
@@ -48,25 +48,24 @@ public class ClienteService {
 		}
 
 	}
-	
-
-	private void updateData(Cliente newCliente, Cliente cliente) {
-		newCliente.setNome(cliente.getNome());
-		newCliente.setEmail(cliente.getEmail());
-		
-	}
 
 	public List<Cliente> findAll() {
 		return repo.findAll();
 	}
-	
+
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
 	}
-	
+
 	public Cliente fromDTO(ClienteDTO dto) {
 		return new Cliente(dto.getId(), dto.getNome(), dto.getEmail(), null, null);
+	}
+
+	private void updateData(Cliente newCliente, Cliente cliente) {
+		newCliente.setNome(cliente.getNome());
+		newCliente.setEmail(cliente.getEmail());
+
 	}
 
 }
